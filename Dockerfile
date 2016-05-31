@@ -7,9 +7,9 @@ RUN apk add --update    \
             make
 
 RUN pip2.7 install --upgrade pip
-RUN pip2.7 install boto3
+RUN pip2.7 install awscli
 
-RUN mkdir -p /opt/builder
-COPY ./builder.py /opt/builder
+RUN mkdir -p /opt/builder/bin
+COPY ./builder.sh /opt/builder/bin
 
-ENTRYPOINT /usr/bin/python2.7 /opt/builder/builder.py
+ENTRYPOINT /opt/builder/bin/builder.sh
