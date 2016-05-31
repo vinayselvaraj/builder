@@ -15,10 +15,39 @@ then
     exit 1
 fi
 
-mkdir -p /opt/builder/tmp
-mkdir -p /opt/builder/workspace
+if [ -z $DOCKER_IMAGE_NAME ]
+then
+    echo "DOCKER_IMAGE_NAME is not set"
+    exit 1
+fi
 
-aws s3 cp s3://$INPUT_S3_BUCKET/$INPUT_S3_OBJECT_KEY /opt/builder/tmp
-unzip /opt/builder/tmp/$INPUT_S3_OBJECT_KEY -d /opt/builder/workspace
+if [ -z $DOCKER_IMAGE_TAG ]
+then
+    echo "DOCKER_IMAGE_TAG is not set"
+    exit 1
+fi
 
-/opt/builder/workspace/build.sh
+BUILDER_HOME=/opt/builder
+WORKSPACE=$BUILDER_HOME/workspace
+
+mkdir -p $BUILDER_HOME/tmp
+mkdir -p $WORKSPACE
+
+aws s3 cp s3://$INPUT_S3_BUCKET/$INPUT_S3_OBJECT_KEY $BUILDER_HOME/tmp
+unzip $BUILDER_HOME/tmp/$INPUT_S3_OBJECT_KEY -d $WORKSPACE
+
+cd $WORKSPACE
+
+if [ -e $WORKSPACE/build.sh ]
+then
+    /opt/builder/workspace/build.sh
+fi
+
+if [ ! -e $WORKSPACE/Dockerfile ]
+then
+    echo "Unable to find Dockerfile"
+    exit 1
+fi
+
+docker build -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+
