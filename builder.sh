@@ -3,13 +3,13 @@
 set -xe
 
 # Check for required environment variables
-if [ -z INPUT_S3_BUCKET ]
+if [ -z $INPUT_S3_BUCKET ]
 then
     echo "INPUT_S3_BUCKET is not set"
     exit 1
 fi
 
-if [ -z INPUT_S3_OBJECT_KEY ]
+if [ -z $INPUT_S3_OBJECT_KEY ]
 then
     echo "INPUT_S3_OBJECT_KEY is not set"
     exit 1
