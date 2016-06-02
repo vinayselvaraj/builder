@@ -48,7 +48,7 @@ IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMA
 # Send image name to build output location
 TMPFILE=`mktemp`
 echo $IMAGE_NAME > $TMPFILE
-aws s3 cp $TMPFILE s3://$OUTPUT_S3_BUCKET/$OUTPUT_S3_OBJECT_KEY
+aws s3 cp --sse aws:kms $TMPFILE s3://$OUTPUT_S3_BUCKET/$OUTPUT_S3_OBJECT_KEY
 
 # Unset CodePipeline creds
 unset AWS_ACCESS_KEY_ID
