@@ -47,7 +47,7 @@ cd $WORKSPACE
 
 if [ -e $WORKSPACE/build.sh ]
 then
-    /opt/builder/workspace/build.sh
+    $WORKSPACE/build.sh
 fi
 
 if [ ! -e $WORKSPACE/Dockerfile ]
@@ -56,5 +56,7 @@ then
     exit 1
 fi
 
-docker build -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+docker build -t $AWS_ACCOUNT_ID.dkr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
 
+aws ecr get-login --region $AWS_DEFAULT_REGION
+docker push $AWS_ACCOUNT_ID.dkr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
