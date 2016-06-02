@@ -27,6 +27,10 @@ then
     exit 1
 fi
 
+
+# Install dependencies
+yum -y install unzip
+
 BUILDER_HOME=/opt/builder
 WORKSPACE=$BUILDER_HOME/workspace
 
