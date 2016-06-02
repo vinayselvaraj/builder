@@ -60,6 +60,14 @@ then
     exit 1
 fi
 
-docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+
+docker build -t $IMAGE_NAME .
 $(aws ecr get-login --region $AWS_DEFAULT_REGION)
-docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+docker push $IMAGE_NAME
+
+TMPFILE=`mktemp`
+echo $IMAGE_NAME > $TMPFILE
+aws s3 cp $TMPFILE s3://$OUTPUT_S3_BUCKET/$OUTPUT_S3_OBJECT_KEY
+
+echo "Build complete.."
