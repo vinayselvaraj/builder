@@ -27,6 +27,11 @@ then
     exit 1
 fi
 
+# Store creds
+CP_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+CP_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+CP_AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN
+
 
 # Install dependencies
 yum -y install unzip
@@ -41,6 +46,7 @@ mkdir -p $WORKSPACE
 aws configure set s3.signature_version s3v4
 aws s3 cp s3://$INPUT_S3_BUCKET/$INPUT_S3_OBJECT_KEY $BUILDER_HOME/tmp/source.zip
 
+# Unset CodePipeline creds
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 unset AWS_SESSION_TOKEN
@@ -65,6 +71,11 @@ IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMA
 docker build -t $IMAGE_NAME .
 $(aws ecr get-login --region $AWS_DEFAULT_REGION)
 docker push $IMAGE_NAME
+
+# Set CodePipeline creds
+export AWS_ACCESS_KEY_ID=$CP_AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY=$CP_AWS_SECRET_ACCESS_KEY
+export AWS_SESSION_TOKEN=$CP_AWS_SESSION_TOKEN
 
 TMPFILE=`mktemp`
 echo $IMAGE_NAME > $TMPFILE
