@@ -33,6 +33,9 @@ WORKSPACE=$BUILDER_HOME/workspace
 mkdir -p $BUILDER_HOME/tmp
 mkdir -p $WORKSPACE
 
+# Enable SigV4
+aws configure set s3.signature_version s3v4
+
 aws s3 cp s3://$INPUT_S3_BUCKET/$INPUT_S3_OBJECT_KEY $BUILDER_HOME/tmp
 unzip $BUILDER_HOME/tmp/$INPUT_S3_OBJECT_KEY -d $WORKSPACE
 
