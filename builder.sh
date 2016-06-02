@@ -39,8 +39,12 @@ mkdir -p $WORKSPACE
 
 # Enable SigV4
 aws configure set s3.signature_version s3v4
-
 aws s3 cp s3://$INPUT_S3_BUCKET/$INPUT_S3_OBJECT_KEY $BUILDER_HOME/tmp/source.zip
+
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+unset AWS_SESSION_TOKEN
+
 unzip $BUILDER_HOME/tmp/source.zip -d $WORKSPACE
 
 cd $WORKSPACE
@@ -57,6 +61,5 @@ then
 fi
 
 docker build -t $AWS_ACCOUNT_ID.dkr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
-
 aws ecr get-login --region $AWS_DEFAULT_REGION
 docker push $AWS_ACCOUNT_ID.dkr.$AWS_DEFAULT_REGION.amazonaws.com/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
