@@ -1,6 +1,29 @@
-#!/bin/sh
+#!/bin/bash
 
 set -xe
+
+get_param() {
+    
+    if [ -z "$1" ]
+    then
+        echo "No arg passed to get_param"
+        exit 1
+    fi
+        
+    KEY=$1
+    user_param_entries=
+    
+    while read -r -a line
+    do
+        if [[ $line =~ ^$KEY= ]]
+        then
+            VALUE=`echo $line| awk -F "=" '{print $2}'`
+            echo $VALUE
+            return 0
+        fi
+    done <<< `echo $USER_PARAMS |sed -e 's/ //g' |tr ',', '\n'`
+    
+}
 
 # Check for required environment variables
 if [ -z $INPUT_S3_BUCKET ]
@@ -15,19 +38,17 @@ then
     exit 1
 fi
 
+AWS_DEFAULT_REGION=`get_param AWS_DEFAULT_REGION`
+AWS_ACCOUNT_ID=`get_param AWS_DEFAULT_REGION`
+
+DOCKER_IMAGE_NAME=`get_param ecrRepository`
 if [ -z $DOCKER_IMAGE_NAME ]
 then
     echo "DOCKER_IMAGE_NAME is not set"
     exit 1
 fi
 
-if [ -z $DOCKER_IMAGE_TAG ]
-then
-    echo "DOCKER_IMAGE_TAG is not set"
-    exit 1
-fi
-
-
+DOCKER_IMAGE_TAG=`date +%Y%m%d%H%M%S`
 
 # Install dependencies
 yum -y install unzip
