@@ -10,6 +10,7 @@ RUN pip2.7 install --upgrade pip
 
 # Install AWS CLI
 RUN pip2.7 install awscli
+RUN pip2.7 install boto3
 
 RUN mkdir -p /opt/builder/bin
 COPY ./builder.py /opt/builder/bin
