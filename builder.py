@@ -29,6 +29,7 @@ for pair in pairs:
 
 # Setup S3 client using CodePipeline provided credentials
 cp_s3_client = boto3.client('s3',
+                             config=Config(signature_version='s3v4'),
                              region_name=user_params['awsRegion'],
                              aws_access_key_id=CODEPIPELINE_ARTIFACT_CREDENTIALS['accessKeyId'],
                              aws_secret_access_key=CODEPIPELINE_ARTIFACT_CREDENTIALS['secretAccessKey'],
@@ -65,12 +66,8 @@ TMP_DIR = BUILDER_HOME + "/tmp"
 os.mkdir(WORKSPACE)
 os.mkdir(TMP_DIR)
 
-print inputArtifact['location']['s3Location']['bucketName']
-print inputArtifact['location']['s3Location']['objectKey']
-
 # Copy source bundle
 SRC_LOC = TMP_DIR + "/source.zip"
-print SRC_LOC
 cp_s3_client.download_file(
                             inputArtifact['location']['s3Location']['bucketName'],
                             inputArtifact['location']['s3Location']['objectKey'],
