@@ -14,9 +14,10 @@ CODEPIPELINE_USER_PARAMS          = json.loads(os.environ['CODEPIPELINE_USER_PAR
 CODEPIPELINE_INPUT_ARTIFACTS      = json.loads(os.environ['CODEPIPELINE_INPUT_ARTIFACTS'])
 CODEPIPELINE_OUTPUT_ARTIFACTS     = json.loads(os.environ['CODEPIPELINE_OUTPUT_ARTIFACTS'])
 
-print CODEPIPELINE_ARTIFACT_CREDENTIALS
-print CODEPIPELINE_INPUT_ARTIFACTS
-print CODEPIPELINE_OUTPUT_ARTIFACTS
+print os.environ['CODEPIPELINE_ARTIFACT_CREDENTIALS']
+print os.environ['CODEPIPELINE_USER_PARAMS']
+print os.environ['CODEPIPELINE_INPUT_ARTIFACTS']
+print os.environ['CODEPIPELINE_OUTPUT_ARTIFACTS']
 
 # Parse user parameters
 user_params = dict()
@@ -24,6 +25,13 @@ pairs = CODEPIPELINE_USER_PARAMS.split(',')
 for pair in pairs:
     kv = pair.split('=')
     user_params[ kv[0].strip() ] = kv[1].strip()
+
+# Setup S3 client using CodePipeline provided credentials
+cp_s3_client = boto3.client('s3',
+                             region_name=user_params['awsRegion'],
+                             aws_access_key_id=CODEPIPELINE_ARTIFACT_CREDENTIALS['accessKeyId'],
+                             aws_secret_access_key=CODEPIPELINE_ARTIFACT_CREDENTIALS['secretAccessKey'],
+                             aws_session_token=['sessionToken'])
 
 # Get input & output artifact names
 inputArtifactName  = user_params['inputArtifactName']
@@ -56,6 +64,5 @@ TMP_DIR = BUILDER_HOME + "/tmp"
 os.mkdir(WORKSPACE)
 os.mkdir(TMP_DIR)
 
-# Copy source bundle to TMP_DIR
 
 
