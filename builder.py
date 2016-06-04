@@ -4,6 +4,7 @@ import boto3
 import datetime
 import os
 import json
+import zipfile
 
 # Setup constants
 BUILDER_HOME = "/opt/builder"
@@ -63,6 +64,17 @@ WORKSPACE = BUILDER_HOME + "/workspace"
 TMP_DIR = BUILDER_HOME + "/tmp"
 os.mkdir(WORKSPACE)
 os.mkdir(TMP_DIR)
+
+# Copy source bundle
+cp_s3_client.download_file(
+                            inputArtifact['location']['s3Location']['bucketName'],
+                            inputArtifact['location']['s3Location']['objectKey'],
+                            TMP_DIR + '/source.zip')
+
+# Unzip source bundle to workspace
+zf = zipfile.ZipFile(TMP_DIR + '/source.zip')
+zf.extractall(WORKSPACE)
+zf.close()
 
 
 
