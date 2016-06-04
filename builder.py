@@ -69,10 +69,10 @@ os.mkdir(TMP_DIR)
 cp_s3_client.download_file(
                             inputArtifact['location']['s3Location']['bucketName'],
                             inputArtifact['location']['s3Location']['objectKey'],
-                            TMP_DIR + '/source.zip')
+                            TMP_DIR + "/source.zip")
 
 # Unzip source bundle to workspace
-zf = zipfile.ZipFile(TMP_DIR + '/source.zip')
+zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
