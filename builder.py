@@ -65,6 +65,9 @@ TMP_DIR = BUILDER_HOME + "/tmp"
 os.mkdir(WORKSPACE)
 os.mkdir(TMP_DIR)
 
+print inputArtifact['location']['s3Location']['bucketName']
+print inputArtifact['location']['s3Location']['objectKey']
+
 # Copy source bundle
 SRC_LOC = TMP_DIR + "/source.zip"
 cp_s3_client.download_file(
