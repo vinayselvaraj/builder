@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import boto3
+from botocore.client import Config
+
 import datetime
 import os
 import json
