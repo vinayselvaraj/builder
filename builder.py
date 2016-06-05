@@ -9,6 +9,8 @@ import json
 import sys
 import subprocess
 
+PWD = os.getcwd()
+
 # Setup constants
 BUILDER_HOME = "/opt/builder"
 
@@ -76,16 +78,17 @@ cp_s3_client.download_file(
                             inputArtifact['location']['s3Location']['objectKey'],
                             SRC_LOC)
 
+os.chdir(WORKSPACE)
+
 # Unzip source bundle to workspace
 subprocess.check_call([ "unzip", TMP_DIR + "/source.zip", "-d", WORKSPACE])
 
-subprocess.check_call(["find",  "/opt/builder"])
-
 if os.path.exists(WORKSPACE + "/build.sh"):
-    subprocess.check_call(["ls", "-al", "/opt/builder/workspace/build.sh"])
+    os.chdir(WORKSPACE)
     subprocess.check_call(WORKSPACE + "/build.sh")
 
 if not os.path.exists(WORKSPACE + "/Dockerfile"):
     print "Unable to find Dockerfile in source bundle"
     sys.exit(1)
 
+os.chdir(PWD)
