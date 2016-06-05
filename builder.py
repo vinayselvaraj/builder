@@ -82,4 +82,4 @@ zf.extractall(WORKSPACE)
 zf.close()
 
 if os.path.exists(WORKSPACE + "/build.sh"):
-    subprocess.call(WORKSPACE + "/build.sh")
+    subprocess.check_call(WORKSPACE + "/build.sh")
