@@ -7,7 +7,6 @@ import datetime
 import os
 import json
 import sys
-import zipfile
 import subprocess
 
 # Setup constants
@@ -78,9 +77,7 @@ cp_s3_client.download_file(
                             SRC_LOC)
 
 # Unzip source bundle to workspace
-zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
-zf.extractall(WORKSPACE)
-zf.close()
+subprocess.check_call([ "unzip", TMP_DIR + "/source.zip", "-d", WORKSPACE])
 
 subprocess.check_call(["find",  "/opt/builder"])
 
