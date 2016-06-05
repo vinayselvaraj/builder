@@ -69,6 +69,7 @@ WORKSPACE = BUILDER_HOME + "/workspace"
 TMP_DIR = BUILDER_HOME + "/tmp"
 os.makedirs(WORKSPACE)
 os.makedirs(TMP_DIR)
+os.call("find /opt/builder")
 
 # Copy source bundle
 SRC_LOC = TMP_DIR + "/source.zip"
