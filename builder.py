@@ -69,7 +69,6 @@ WORKSPACE = BUILDER_HOME + "/workspace"
 TMP_DIR = BUILDER_HOME + "/tmp"
 os.makedirs(WORKSPACE)
 os.makedirs(TMP_DIR)
-os.call("find /opt/builder")
 
 # Copy source bundle
 SRC_LOC = TMP_DIR + "/source.zip"
@@ -83,11 +82,7 @@ zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
-print "Running: ls %s" % BUILDER_HOME
-subprocess.call("ls %s" % BUILDER_HOME)
-
-print "Running: ls %s" % WORKSPACE
-subprocess.call("ls %s" % WORKSPACE)
+os.call("find /opt/builder")
 
 if os.path.exists(WORKSPACE + "/build.sh"):
     subprocess.check_call(WORKSPACE + "/build.sh")
