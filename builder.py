@@ -85,6 +85,7 @@ zf.close()
 subprocess.check_call(["find",  "/opt/builder"])
 
 if os.path.exists(WORKSPACE + "/build.sh"):
+    subprocess.check_call(["ls", "-al", "/opt/builder/workspace/build.sh"])
     subprocess.check_call(WORKSPACE + "/build.sh")
 
 if not os.path.exists(WORKSPACE + "/Dockerfile"):
