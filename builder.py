@@ -6,6 +6,7 @@ from botocore.client import Config
 import datetime
 import os
 import json
+import sys
 import zipfile
 import subprocess
 
@@ -81,5 +82,12 @@ zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
+subprocess.call("ls %s" % WORKSPACE)
+
 if os.path.exists(WORKSPACE + "/build.sh"):
     subprocess.check_call(WORKSPACE + "/build.sh")
+
+if not os.path.exists(WORKSPACE + "/Dockerfile"):
+    print "Unable to find Dockerfile in source bundle"
+    sys.exit(1)
+
