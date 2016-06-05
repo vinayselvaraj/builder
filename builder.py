@@ -82,6 +82,9 @@ zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
+print "Running: ls %s" % BUILDER_HOME
+subprocess.call("ls %s" % BUILDER_HOME)
+
 print "Running: ls %s" % WORKSPACE
 subprocess.call("ls %s" % WORKSPACE)
 
