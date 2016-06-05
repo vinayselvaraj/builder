@@ -61,10 +61,6 @@ for artifact in outputArtifacts:
 print "inputArtifact: %s" % inputArtifact
 print "outputArtifact: %s" % outputArtifact
 
-# Set tag name based on datetime
-timestamp = datetime.datetime.now()
-tag = timestamp.strftime('%Y%m%d%H%M%S')
-
 # Setup workspace
 WORKSPACE = BUILDER_HOME + "/workspace"
 TMP_DIR = BUILDER_HOME + "/tmp"
@@ -78,6 +74,7 @@ cp_s3_client.download_file(
                             inputArtifact['location']['s3Location']['objectKey'],
                             SRC_LOC)
 
+# Switch CWD to workspace directory
 os.chdir(WORKSPACE)
 
 # Unzip source bundle to workspace
@@ -90,5 +87,18 @@ if os.path.exists(WORKSPACE + "/build.sh"):
 if not os.path.exists(WORKSPACE + "/Dockerfile"):
     print "Unable to find Dockerfile in source bundle"
     sys.exit(1)
+
+# Set tag name based on datetime
+timestamp = datetime.datetime.now()
+tag = timestamp.strftime('%Y%m%d%H%M%S')
+
+# Set docker image name
+image_name = "%s.dkr.ecr.%s.amazonaws.com/%s:%s" % (
+                                                    user_params['awsAccountId'],
+                                                    user_params['awsRegion'],
+                                                    user_params['ecrRepository'],
+                                                    tag)
+# Run Docker build
+subprocess.check_call([ "docker", "-t", image_name, "."])
 
 os.chdir(PWD)
