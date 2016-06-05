@@ -82,6 +82,7 @@ zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
+print "Running: ls %s" % WORKSPACE
 subprocess.call("ls %s" % WORKSPACE)
 
 if os.path.exists(WORKSPACE + "/build.sh"):
