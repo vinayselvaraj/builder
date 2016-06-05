@@ -7,6 +7,7 @@ import datetime
 import os
 import json
 import zipfile
+import subprocess
 
 # Setup constants
 BUILDER_HOME = "/opt/builder"
@@ -80,5 +81,5 @@ zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
-
-
+if os.path.exists(WORKSPACE + "/build.sh"):
+    subprocess.call(WORKSPACE + "/build.sh")
