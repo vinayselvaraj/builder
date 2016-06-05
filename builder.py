@@ -82,7 +82,7 @@ zf = zipfile.ZipFile(TMP_DIR + "/source.zip")
 zf.extractall(WORKSPACE)
 zf.close()
 
-os.call("find /opt/builder")
+subprocess.check_call(["find",  "/opt/builder"])
 
 if os.path.exists(WORKSPACE + "/build.sh"):
     subprocess.check_call(WORKSPACE + "/build.sh")
