@@ -67,8 +67,8 @@ tag = timestamp.strftime('%Y%m%d%H%M%S')
 # Setup workspace
 WORKSPACE = BUILDER_HOME + "/workspace"
 TMP_DIR = BUILDER_HOME + "/tmp"
-os.mkdir(WORKSPACE)
-os.mkdir(TMP_DIR)
+os.makedirs(WORKSPACE)
+os.makedirs(TMP_DIR)
 
 # Copy source bundle
 SRC_LOC = TMP_DIR + "/source.zip"
