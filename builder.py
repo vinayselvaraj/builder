@@ -20,11 +20,6 @@ CODEPIPELINE_USER_PARAMS          = json.loads(os.environ['CODEPIPELINE_USER_PAR
 CODEPIPELINE_INPUT_ARTIFACTS      = json.loads(os.environ['CODEPIPELINE_INPUT_ARTIFACTS'])
 CODEPIPELINE_OUTPUT_ARTIFACTS     = json.loads(os.environ['CODEPIPELINE_OUTPUT_ARTIFACTS'])
 
-print os.environ['CODEPIPELINE_ARTIFACT_CREDENTIALS']
-print os.environ['CODEPIPELINE_USER_PARAMS']
-print os.environ['CODEPIPELINE_INPUT_ARTIFACTS']
-print os.environ['CODEPIPELINE_OUTPUT_ARTIFACTS']
-
 # Parse user parameters
 user_params = dict()
 pairs = CODEPIPELINE_USER_PARAMS.split(',')
@@ -57,9 +52,6 @@ for artifact in outputArtifacts:
     if artifact['name'] == outputArtifactName:
         outputArtifact = artifact
         break
-
-print "inputArtifact: %s" % inputArtifact
-print "outputArtifact: %s" % outputArtifact
 
 # Setup workspace
 WORKSPACE = BUILDER_HOME + "/workspace"
@@ -100,5 +92,21 @@ image_name = "%s.dkr.ecr.%s.amazonaws.com/%s:%s" % (
                                                     tag)
 # Run Docker build
 subprocess.check_call([ "docker", "build", "-t", image_name, "."])
+
+# Run Docker login
+ecr_client = boto3.client('ecr',
+                          region_name=user_params['awsRegion'])
+ecr_auth_data = ecr_client.get_authorization_token()['authorizationData']
+
+subprocess.check_call(["docker",
+                        "login",
+                        "-u", "AWS",
+                        "-p", ecr_auth_data['authorizationToken'],
+                        "-e", "none",
+                        ecr_auth_data['proxyEndpoint']])
+
+subprocess.check_call(["docker", "push", image_name])
+
+print "--- BUILD FINISHED ---"
 
 os.chdir(PWD)
