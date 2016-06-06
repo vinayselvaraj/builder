@@ -99,6 +99,6 @@ image_name = "%s.dkr.ecr.%s.amazonaws.com/%s:%s" % (
                                                     user_params['ecrRepository'],
                                                     tag)
 # Run Docker build
-subprocess.check_call([ "docker", "-t", image_name, "."])
+subprocess.check_call([ "docker", "build", "-t", image_name, "."])
 
 os.chdir(PWD)
