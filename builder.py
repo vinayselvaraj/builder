@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import base64
 import boto3
 from botocore.client import Config
 
@@ -96,12 +97,16 @@ subprocess.check_call([ "docker", "build", "-t", image_name, "."])
 # Run Docker login
 ecr_client = boto3.client('ecr',
                           region_name=user_params['awsRegion'])
+
 ecr_auth_data = ecr_client.get_authorization_token()['authorizationData'][0]
+
+ecr_user = base64.b64decode(ecr_auth_data['authorizationToken']).split(':')[0]
+ecr_token = base64.b64decode(ecr_auth_data['authorizationToken']).split(':')[1]
 
 subprocess.check_call(["docker",
                         "login",
-                        "-u", "AWS",
-                        "-p", ecr_auth_data['authorizationToken'],
+                        "-u", ecr_user,
+                        "-p", ecr_token,
                         "-e", "none",
                         ecr_auth_data['proxyEndpoint']])
 
