@@ -112,6 +112,14 @@ subprocess.check_call(["docker",
 
 subprocess.check_call(["docker", "push", image_name])
 
+
+# Send output
+image_name_bytes = [ord(c) for c in image_name]
+cp_s3_client.put_object(Body=image_name_bytes,
+                        Bucket=outputArtifact['location']['s3Location']['bucketName'],
+                        Key=outputArtifact['location']['s3Location']['objectKey'],
+                        ServerSideEncryption='aws:kms')
+
 print "--- BUILD FINISHED ---"
 
 os.chdir(PWD)
