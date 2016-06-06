@@ -9,6 +9,7 @@ import os
 import json
 import sys
 import subprocess
+import tempfile
 
 PWD = os.getcwd()
 
@@ -114,8 +115,11 @@ subprocess.check_call(["docker", "push", image_name])
 
 
 # Send output
-open('/tmp/output_image_name').write(image_name)
-image_name_data = open('/tmp/output_image_name', 'rb')
+_, tmpfile = tempfile.mkstemp()
+f = open(tmpfile, 'w')
+f.write(image_name)
+f.close()
+image_name_data = open(tmpfile, 'rb')
 cp_s3_client.put_object(Body=image_name_data,
                         Bucket=outputArtifact['location']['s3Location']['bucketName'],
                         Key=outputArtifact['location']['s3Location']['objectKey'],
