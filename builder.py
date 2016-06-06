@@ -96,7 +96,7 @@ subprocess.check_call([ "docker", "build", "-t", image_name, "."])
 # Run Docker login
 ecr_client = boto3.client('ecr',
                           region_name=user_params['awsRegion'])
-ecr_auth_data = ecr_client.get_authorization_token()['authorizationData']
+ecr_auth_data = ecr_client.get_authorization_token()['authorizationData'][0]
 
 subprocess.check_call(["docker",
                         "login",
